@@ -1,141 +1,75 @@
-#include <stdio.h>
-#include <string.h>
+#include <iostream>
+#include <ctime>
+#include <iomanip>
 
-struct op
-{
-    char l;
-    char r[20];
-} op[10], pr[10];
-
+using namespace std;
+ 
 int main()
 {
-    int a, i, k, j, n, z = 0, m, q;
-    char *p, *l;
-    char temp, t;
-    char *tem;
-    printf("Enter the Number of Values:");
-    scanf("%d", &n);
-    for (i = 0; i < n; i++)
-    {
-        printf("left: ");
-        scanf(" %c", &op[i].l);
-        printf("right: ");
-        scanf(" %s", &op[i].r);
+    // Loop Optimization
+
+    time_t start, end;
+    time(&start);
+    int m =0, l=12;
+    for(long int i=0; i<1000000000; i++){
+        l = l + 1;
     }
-    printf("Intermediate Code\n");
-    for (i = 0; i < n; i++)
-    {
-        printf("%c=", op[i].l);
-        printf("%s\n", op[i].r);
+    for(long int i=0; i<1000000000; i++){
+        m = m + 1;
     }
-    for (i = 0; i < n - 1; i++)
-    {
-        temp = op[i].l;
-        for (j = 0; j < n; j++)
-        {
-            p = strchr(op[j].r, temp);
-            if (p)
-            {
-                pr[z].l = op[i].l;
-                strcpy(pr[z].r, op[i].r);
-                z++;
-            }
-        }
+    time(&end);
+    
+    double time_taken = double(end - start);
+    cout << "Time taken by unoptimised loop is : " << fixed
+        << time_taken << setprecision(5);
+    cout << " sec " << endl;
+
+    time(&start);
+    m =0;
+    l=12;
+    for(long int i=0; i<1000000000; i++){
+        m = m + 1;
+        l = l + 1;
     }
-    pr[z].l = op[n - 1].l;
-    strcpy(pr[z].r, op[n - 1].r);
-    z++;
-    printf("\nAfter Dead Code Elimination\n");
-    for (k = 0; k < z; k++)
-    {
-        printf("%c\t=", pr[k].l);
-        printf("%s\n", pr[k].r);
+    time(&end);
+ 
+    time_taken = double(end - start);
+    cout << "Time taken by optimised loop is : " << fixed
+        << time_taken << setprecision(5);
+    cout << " sec " << endl <<endl;
+
+    // Redundant code removal
+    int a = 10;
+    int b = 20;
+    int c = a+b;
+    if(c%2 == 0){cout << "You can see me!\n" << endl;}
+    else{cout << "You will never see me" << endl;}
+
+    // Loop unrolling
+    cout<<"Using Loop\n";
+    for(int i=0; i<3; i++){
+        cout << "Meow" << endl;
     }
-    for (m = 0; m < z; m++)
-    {
-        tem = pr[m].r;
-        for (j = m + 1; j < z; j++)
-        {
-            p = strstr(tem, pr[j].r);
-            if (p)
-            {
-                t = pr[j].l;
-                pr[j].l = pr[m].l;
-                for (i = 0; i < z; i++)
-                {
-                    l = strchr(pr[i].r, t);
-                    if (l)
-                    {
-                        a = l - pr[i].r;
-                        printf("pos: %d\n", a);
-                        pr[i].r[a] = pr[m].l;
-                    }
-                }
-            }
-        }
-    }
-    printf("Eliminate Common Expression\n");
-    for (i = 0; i < z; i++)
-    {
-        printf("%c\t=", pr[i].l);
-        printf("%s\n", pr[i].r);
-    }
-    for (i = 0; i < z; i++)
-    {
-        for (j = i + 1; j < z; j++)
-        {
-            q = strcmp(pr[i].r, pr[j].r);
-            if ((pr[i].l == pr[j].l) && !q)
-            {
-                pr[i].l = '\0';
-            }
-        }
-    }
-    printf("Optimized Code\n");
-    for (i = 0; i < z; i++)
-    {
-        if (pr[i].l != '\0')
-        {
-            printf("%c=", pr[i].l);
-            printf("%s\n", pr[i].r);
-        }
-    }
+    cout<<"Loop unrolling\n";
+    cout<<"Meow\nMeow\nMeow\n";
+
     return 0;
 }
 
 /*
-Input:
-Enter the Number of Values:5
-left: a
-right: 9
-left: b
-right: c+d
-left: e
-right: c+d
-left: f
-right: b+e
-left: k
-right: 12
-
 Output:
-Intermediate Code
-a=9
-b=c+d
-e=c+d
-f=b+e
-k=12
+Time taken by unoptimised loop is : 2.000000 sec 
+Time taken by optimised loop is : 1.00000 sec 
 
-After Dead Code Elimination
-b       =c+d
-e       =c+d
-k       =12
-Eliminate Common Expression
-b       =c+d
-b       =c+d
-k       =12
-Optimized Code
-b=c+d
-k=12
+You can see me!
 
+Using Loop
+Meow
+Meow
+Meow
+Loop unrolling
+Meow
+Meow
+Meow
 
 */
